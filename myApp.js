@@ -1,4 +1,5 @@
 let express = require("express");
+let bodyParser = require("body-parser");
 let app = express();
 require("dotenv").config();
 
@@ -8,6 +9,8 @@ require("dotenv").config();
 //  res.send("Hello Express");
 //});
 
+app.use(bodyParser.urlencoded({ extended: false }));
+
 // Logger middleware function
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path} - ${req.ip}`);
@@ -15,12 +18,20 @@ app.use((req, res, next) => {
 });
 
 // API endpoint for GET /name
-app.route("/name").get((req, res) => {
-  const firstName = req.query.first;
-  const lastName = req.query.last;
-  const fullName = `${firstName} ${lastName}`;
-  res.json({ name: fullName });
-});
+app
+  .route("/name")
+  .get((req, res) => {
+    const firstName = req.query.first;
+    const lastName = req.query.last;
+    const fullName = `${firstName} ${lastName}`;
+    res.json({ name: fullName });
+  })
+  .post((req, res) => {
+    const firstName = req.body.first;
+    const lastName = req.body.last;
+    const fullName = `${firstName} ${lastName}`;
+    res.json({ name: fullName });
+  });
 
 // Echo server route
 app.get("/:word/echo", (req, res) => {
